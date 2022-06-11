@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import initialState from './data.json';
 import Section from 'components/Section';
 import ContactForm from './components/ContactForm';
 import ContactsList from './components/ContactsList';
@@ -7,9 +6,25 @@ import Filter from './components/Filter';
 
 class App extends Component {
   state = {
-    contacts: initialState,
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
+
+    if (parsedContacts) {
+      this.setState({
+        contacts: parsedContacts,
+      });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContact = contact => {
     const { contacts } = this.state;
